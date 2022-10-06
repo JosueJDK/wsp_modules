@@ -26,21 +26,27 @@ class WhatsappApiMain(http.Controller):
 
         if account_user.token_verify == authorization:
             Response.status = '200'
-            data_response = {
+        else:
+            Response.status = '401'
+        
+        data_response = {
                 'status' : Response.status,
                 'phone_number_id' : account_user.phone_number_id,
                 'token' : account_user.token,
                 'url' : account_user.url,
                 'message' : data['message'],
             }
-            # Create registration of request
-            new_request = {
-                'name' : '',
-                'db_name' : data_base_name,
-                'ip_server' : ip_address,
-                'status_code' : Response.status
-            }
-            data_request.create(new_request)
+        # Create registration of request
+        new_request = {
+            'name' : '',
+            'db_name' : data_base_name,
+            'ip_server' : ip_address,
+            'status_code' : Response.status
+        }
+        data_request.create(new_request)
+        
+        return data_response
+           
             # Create registration of messages
             # new_message = {
             #     'name' : account_user.id,
@@ -51,28 +57,6 @@ class WhatsappApiMain(http.Controller):
             #     'status_code' : Response.status
             # }
             # data_message.create(new_message)
-            return data_response
-        else:
-            Response.status = '401'
-            # Create registration of request
-            new_request = {
-                'db_name' : data_base_name,
-                'ip_server' : ip_address,
-                'status_code' : Response.status
-            }
-            data_request.create(new_request)
-            # Create registration of messages
-            # new_message = {
-            #     'name' : account_user.id,
-            #     'id_request' : create_request.id,
-            #     'messaging_product' : data['message']['messaging_product'],
-            #     'recipient_type' : data['message']['recipient_type'],
-            #     'recipient_id' : data['message']['to'],
-            #     'status_code' : Response.status
-            # }
-            # data_message.create(new_message)
-            return Response.status
-
 
 #     @http.route('/whatsapp_api_main/whatsapp_api_main/objects/', auth='public')
 #     def list(self, **kw):
