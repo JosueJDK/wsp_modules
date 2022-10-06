@@ -7,12 +7,17 @@ class WhatsAppRequests(models.Model):
     _name = 'whatsapp.api.main.requests'
     _description = 'Registro de solicitudes'
 
-    name = fields.Char(string="ID Requets", readonly=True)
+    name = fields.Char(string="ID Requets", default="/",readonly=True)
     db_name = fields.Char(string="DataBase Name", require=True, readonly=True)
     ip_server = fields.Char(string="Direction IP of Servidor", require=True, readonly=True)
     status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized')], string='Code Status Request', default='401', readonly=True)
 
     def create(self, vals):
+        self._cr.execute("""
+            select	max(split_part(name,'/',2)::int)
+            from    whatsapp.api.main.requests
+            where name != '/'
+        """)
         max_num = self._cr.fetchone()
         max_num = max_num[0]+1 if max_num[0] else 1
         rec_name = 'RQT/'+str(max_num).zfill(3)
