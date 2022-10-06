@@ -13,10 +13,10 @@ class WhatsAppRequests(models.Model):
     status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized')], string='Code Status Request', default='401', readonly=True)
 
     def create(self, vals):
-        # max_num = self._cr.fetchone()
-        # max_num = max_num[0]+1 if max_num[0] else 1
-        # rec_name = 'RQT/'+str(max_num).zfill(3)
-        # vals['name'] = rec_name
+        max_num = self._cr.fetchone()
+        max_num = max_num[0]+1 if max_num[0] else 1
+        rec_name = 'RQT/'+str(max_num).zfill(3)
+        vals['name'] = rec_name
         print(vals)
         return super(WhatsAppRequests, self).create(vals)
 
