@@ -117,7 +117,7 @@
 
     <!-- menu categories -->
 
-    <menuitem name="Confuration" id="menu_whatsapp_api_main_users_categ" parent="menu_whatsapp_api_main_menu_root" sequence="0"/>
+    <menuitem name="Configuration" id="menu_whatsapp_api_main_users_categ" parent="menu_whatsapp_api_main_menu_root" sequence="0"/>
     <menuitem name="Reportes" id="menu_whatsapp_api_main_reportes_categ" parent="menu_whatsapp_api_main_menu_root" sequence="5"/>
     <!-- <menuitem name="Menu 2" id="whatsapp_api_main.menu_2" parent="whatsapp_api_main.menu_root"/> -->
 
