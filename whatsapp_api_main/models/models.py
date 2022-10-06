@@ -12,17 +12,16 @@ class WhatsAppRequests(models.Model):
     ip_server = fields.Char(string="Direction IP of Servidor", require=True, readonly=True)
     status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized')], string='Code Status Request', default='401', readonly=True)
 
-    # def create(self, vals):
-    #     self._cr.execute("""
-    #         select	max(split_part(name,'/',2)::int)
-    #                         from whatsapp_api_main_requests where name != '/'
-    #     """)
-    #     max_num = self._cr.fetchone()
-    #     max_num = max_num[0]+1 if max_num[0] else 1
-    #     rec_name = 'RQT/'+str(max_num).zfill(3)
-    #     for val in vals:
-    #         val.update({"name": rec_name})
-    #     return super(WhatsAppRequests, self).create(vals)
+    def create(self, vals):
+        self._cr.execute("""
+            select	max(split_part(name,'/',2)::int)
+                            from whatsapp_api_main_requests where name != '/'
+        """)
+        max_num = self._cr.fetchone()
+        max_num = max_num[0]+1 if max_num[0] else 1
+        rec_name = 'RQT/'+str(max_num).zfill(3)
+        vals['name'] = rec_name
+        return super(WhatsAppRequests, self).create(vals)
 
     def unlink(self):
         raise exceptions.Warning('No puedes eliminar registros de solicitudes!')
