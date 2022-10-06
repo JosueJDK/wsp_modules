@@ -16,8 +16,9 @@ class WhatsAppRequests(models.Model):
         max_num = self._cr.fetchone()
         max_num = max_num[0]+1 if max_num[0] else 1
         rec_name = 'RQT/'+str(max_num).zfill(3)
-        vals['name'] = rec_name
         print(vals)
+        for val in vals:
+            val.update({"name": rec_name})
         return super(WhatsAppRequests, self).create(vals)
 
     def unlink(self):
