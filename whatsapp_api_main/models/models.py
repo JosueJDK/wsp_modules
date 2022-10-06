@@ -50,6 +50,7 @@ class AccountsWABA(models.Model):
 class WhatsAppMessages(models.Model):
     _name = 'whatsapp.api.main.messages'
     _description = 'Registro de Mensajes'
+    _order = 'create_date desc'
 
     name = fields.Many2one('whatsapp.api.main.users', string="Id Users Account", readonly=True)
     id_request = fields.Many2one('whatsapp.api.main.requests', string="Id request", readonly=True)
@@ -64,6 +65,7 @@ class WhatsAppMessages(models.Model):
 class WhatsAppMessagesLine(models.Model):
     _name = 'whatsapp.api.main.messages.line'
     _description = 'Registro del contenido de Mensajes'
+    _order = 'create_date desc'
 
     message_id = fields.Many2one('whatsapp.api.main.messages', string="Id Message", readonly=True)
     type_message = fields.Char(string="Type of message send", readonly=True)
