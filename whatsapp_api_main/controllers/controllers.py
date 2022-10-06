@@ -43,8 +43,18 @@ class WhatsappApiMain(http.Controller):
             'ip_server' : ip_address,
             'status_code' : Response.status
         }
-        data_request.create(new_request)
-        
+        create_request = data_request.create(new_request)
+        # Create registration of messages
+        new_message = {
+            'name' : account_user.id,
+            'id_request' : create_request.id,
+            'messaging_product' : data['message']['messaging_product'],
+            'recipient_type' : data['message']['recipient_type'],
+            'recipient_id' : data['message']['to'],
+            'status_code' : Response.status
+        }
+        data_message.create(new_message)
+
         return data_response
            
             # Create registration of messages
