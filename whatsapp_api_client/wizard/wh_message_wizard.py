@@ -27,7 +27,7 @@ class WhatsappSendMessage(models.TransientModel):
             user_name = rec.user_name
             verify_token = rec.verify_token
         data = {
-                "db_name" : "db_prueba",
+                "db_name" : self._cr.dbname,
                 "user_name" : user_name,
                 "message" :  message_json
             }
@@ -46,7 +46,7 @@ class WhatsappSendMessage(models.TransientModel):
             "Content-Type": "application/json",
             "Authorization" : f"Bearer {verify_token}"
         }
-        response = requests.post('http://192.168.2.20:8069/api/home', headers=headers, json=data)
+        response = requests.post('http://192.168.2.21:8069/api/home', headers=headers, json=data)
         my_json = response.content.decode('utf8').replace("'",'"')
         response_data = json.loads(my_json)
         if response.status_code == 200:
