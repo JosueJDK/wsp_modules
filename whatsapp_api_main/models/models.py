@@ -14,10 +14,10 @@ class WhatsAppRequests(models.Model):
 
     def create(self, vals):
         self._cr.execute("""
-            select	max(split_part(name,'/',2)::int)
-                from whatsapp_api_main_requests where name != '/'
+            select	max(split_part(name,'/',2))
+	            from whatsapp_api_main_requests where name != '/'
         """)
-        max_num = self._cr.fetchone()
+        max_num = int(self._cr.fetchone())
         max_num = max_num[0]+1 if max_num[0] else 1
         rec_name = 'RQT/'+str(max_num).zfill(3)
         print(vals)
