@@ -39,7 +39,7 @@
             <field name="model">whatsapp.api.main.users</field>
             <field name="type">tree</field>
             <field name="arch" type="xml">
-                <tree string="Lista de precio">
+                <tree string="">
                     <field name="name"/>
                     <field name="token_verify" password="True"/>
                     <field name="phone_number_id"/>
@@ -102,7 +102,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="action_whatsapp_api_main_messages">
-      <field name="name">Requests</field>
+      <field name="name">Messages</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">whatsapp.api.main.messages</field>
       <field name="view_mode">tree,form</field>
@@ -122,13 +122,13 @@
     <!-- <menuitem name="Menu 2" id="whatsapp_api_main.menu_2" parent="whatsapp_api_main.menu_root"/> -->
 
     <!-- actions -->
-    <menuitem name="Usuers" id="menu_whatsapp_api_main_users" parent="menu_whatsapp_api_main_users_categ"
+    <menuitem name="Users" id="menu_whatsapp_api_main_users" parent="menu_whatsapp_api_main_users_categ"
           action="action_whatsapp_api_main_users"/>
 
     <menuitem name="Requets" id="menu_whatsapp_api_main_requets" parent="menu_whatsapp_api_main_reportes_categ"
           action="action_whatsapp_api_main_requests"/>
 
-    <menuitem name="Mensssages" id="menu_whatsapp_api_main_messages" parent="menu_whatsapp_api_main_reportes_categ"
+    <menuitem name="Messages" id="menu_whatsapp_api_main_messages" parent="menu_whatsapp_api_main_reportes_categ"
           action="action_whatsapp_api_main_messages"/>
 <!--
     <menuitem name="Server to list" id="whatsapp_api_main" parent="whatsapp_api_main.menu_2"
