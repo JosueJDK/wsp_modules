@@ -1,0 +1,138 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="whatsapp_api_main_users_form">
+      <field name="name">whatsapp.api.main.users.form</field>
+      <field name="model">whatsapp.api.main.users</field>
+      <field name="arch" type="xml">
+        <form string="Requests">
+          <sheet>
+            <group name="group_top">
+              <group name="group_left">
+                <field name="name"/>
+                <field name="token_verify"/>
+              </group>
+              <group name="group_right">
+                  <field name="phone_number_id"/>
+                  <field name="token" password="True"/>
+                  <field name="url"/>
+              </group>
+            </group>
+          </sheet>
+          <style>
+          .o_field_char.o_field_widget { 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            display: -webkit-box; 
+            -webkit-line-clamp: 1; /* number of lines to show */ 
+            -webkit-box-orient: vertical;
+          }
+          </style>
+        </form >
+      </field>
+    </record>
+
+    <!-- views tree models -->
+    <record model="ir.ui.view" id="whatsapp_api_main_users_tree">
+            <field name="name">whatsapp.api.main.users.tree</field>
+            <field name="model">whatsapp.api.main.users</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="Lista de precio">
+                    <field name="name"/>
+                    <field name="token_verify" password="True"/>
+                    <field name="phone_number_id"/>
+                    <field name="token" password="True"/>
+                </tree>
+            </field>
+        </record>
+
+
+    <record model="ir.ui.view" id="whatsapp_api_main_requests_tree">
+      <field name="name">whatsapp.api.main.requests.tree</field>
+      <field name="model">whatsapp.api.main.requests</field>
+      <field name="arch" type="xml">
+        <tree string="" create="false">
+          <field name="name"/>
+          <field name="db_name" />
+          <field name="ip_server"/>
+          <field name="status_code"/>
+          <field name="create_date"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="whatsapp_api_main_messages_tree">
+      <field name="name">whatsapp.api.main.requests.tree</field>
+      <field name="model">whatsapp.api.main.messages</field>
+      <field name="arch" type="xml">
+        <tree string="" create="false">
+          <field name="name"/>
+          <field name="id_request" />
+          <field name="messaging_product"/>
+          <field name="recipient_type"/>
+          <field name="recipient_id"/>
+          <field name="status_code"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!--Actions Model-->
+    <record model="ir.actions.act_window" id="action_whatsapp_api_main_users">
+      <field name="name">Users</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.main.users</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+        <p></p>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_whatsapp_api_main_requests">
+      <field name="name">Requests</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.main.requests</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+      <p></p>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_whatsapp_api_main_messages">
+      <field name="name">Requests</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.main.messages</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+      <p></p>
+      </field>
+    </record>
+
+    <!-- Top menu item -->
+
+    <menuitem name="WhatsApp Api" id="menu_whatsapp_api_main_menu_root" sequence="10"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Usuarios" id="menu_whatsapp_api_main_users_categ" parent="menu_whatsapp_api_main_menu_root" sequence="0"/>
+    <menuitem name="Reportes" id="menu_whatsapp_api_main_reportes_categ" parent="menu_whatsapp_api_main_menu_root" sequence="5"/>
+    <!-- <menuitem name="Menu 2" id="whatsapp_api_main.menu_2" parent="whatsapp_api_main.menu_root"/> -->
+
+    <!-- actions -->
+    <menuitem name="Usuarios" id="menu_whatsapp_api_main_users" parent="menu_whatsapp_api_main_users_categ"
+          action="action_whatsapp_api_main_users"/>
+
+    <menuitem name="Requets" id="menu_whatsapp_api_main_requets" parent="menu_whatsapp_api_main_reportes_categ"
+          action="action_whatsapp_api_main_requests"/>
+
+    <menuitem name="Mensssages" id="menu_whatsapp_api_main_messages" parent="menu_whatsapp_api_main_reportes_categ"
+          action="action_whatsapp_api_main_messages"/>
+<!--
+    <menuitem name="Server to list" id="whatsapp_api_main" parent="whatsapp_api_main.menu_2"
+              action="whatsapp_api_main.action_server"/>
+-->
+  </data>
+</odoo>
