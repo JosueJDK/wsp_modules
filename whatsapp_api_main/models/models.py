@@ -6,6 +6,7 @@ from odoo import exceptions
 class WhatsAppRequests(models.Model):
     _name = 'whatsapp.api.main.requests'
     _description = 'Registro de solicitudes'
+    _order = 'create_date desc'
 
     name = fields.Char(string="ID Requets", default="/",readonly=True)
     db_name = fields.Char(string="DataBase Name", require=True, readonly=True)

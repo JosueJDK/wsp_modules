@@ -31,7 +31,6 @@ class WhatsappApiMain(http.Controller):
         
         data_response = {
                 'status' : Response.status,
-                'phone_number_id' : account_user.phone_number_id,
                 'token' : account_user.token,
                 'url' : account_user.url
             }
