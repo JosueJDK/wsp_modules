@@ -18,7 +18,7 @@ class WhatsAppRequests(models.Model):
         # rec_name = 'RQT/'+str(max_num).zfill(3)
         # vals['name'] = rec_name
         print(vals)
-        super(WhatsAppRequests, self).create(vals)
+        return super(WhatsAppRequests, self).create(vals)
 
     def unlink(self):
         raise exceptions.Warning('No puedes eliminar registros de solicitudes!')
