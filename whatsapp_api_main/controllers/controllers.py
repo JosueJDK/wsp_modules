@@ -46,7 +46,7 @@ class WhatsappApiMain(http.Controller):
         create_request = data_request.create(new_request)
         # Create registration of messages
         new_message = {
-            'name' : None,
+            'name' : account_user.id,
             'id_request' : create_request.id,
             'messaging_product' : data['message']['messaging_product'],
             'recipient_type' : data['message']['recipient_type'],

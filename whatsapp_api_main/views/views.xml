@@ -69,8 +69,8 @@
       <field name="model">whatsapp.api.main.messages</field>
       <field name="arch" type="xml">
         <tree string="" create="false">
-          <field name="name"/>
           <field name="id_request" />
+          <field name="name"/>
           <field name="messaging_product"/>
           <field name="recipient_type"/>
           <field name="recipient_id"/>
