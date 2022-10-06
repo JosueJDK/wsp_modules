@@ -33,8 +33,7 @@ class WhatsappApiMain(http.Controller):
                 'status' : Response.status,
                 'phone_number_id' : account_user.phone_number_id,
                 'token' : account_user.token,
-                'url' : account_user.url,
-                'message' : data['message'],
+                'url' : account_user.url
             }
         # Create registration of request
         new_request = {
@@ -56,27 +55,3 @@ class WhatsappApiMain(http.Controller):
         data_message.create(new_message)
 
         return data_response
-           
-            # Create registration of messages
-            # new_message = {
-            #     'name' : account_user.id,
-            #     'id_request' : create_request.id,
-            #     'messaging_product' : data['message']['messaging_product'],
-            #     'recipient_type' : data['message']['recipient_type'],
-            #     'recipient_id' : data['message']['to'],
-            #     'status_code' : Response.status
-            # }
-            # data_message.create(new_message)
-
-#     @http.route('/whatsapp_api_main/whatsapp_api_main/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('whatsapp_api_main.listing', {
-#             'root': '/whatsapp_api_main/whatsapp_api_main',
-#             'objects': http.request.env['whatsapp_api_main.whatsapp_api_main'].search([]),
-#         })
-
-#     @http.route('/whatsapp_api_main/whatsapp_api_main/objects/<model("whatsapp_api_main.whatsapp_api_main"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('whatsapp_api_main.object', {
-#             'object': obj
-#         })
