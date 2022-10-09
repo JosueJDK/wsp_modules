@@ -11,4 +11,5 @@ class WhatsappApiMain(http.Controller):
         data = request.jsonrequest
         args = request.httprequest.args
 
-        return args
+        if args['hub.verify_token'] == '30cca545-3838-48b2-80a7-9e43b1ae8ce4':
+            return Response(args['hub.challenge'], 200)
