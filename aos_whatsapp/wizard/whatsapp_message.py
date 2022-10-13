@@ -102,9 +102,10 @@ class WhatsappSendMessage(models.TransientModel):
             "Content-Type": "application/json",
             "Authorization" : f"Bearer {verify_token}"
         }
-        response = requests.post('http://192.168.2.14:8069/api/home', headers=headers, json=data)
+        response = requests.post('https://96c7-181-65-18-158.sa.ngrok.i/api/home', headers=headers, json=data)
         my_json = response.content.decode('utf8').replace("'",'"')
         response_data = json.loads(my_json)
+        print(response_data)
         if response.status_code == 200:
             return True, response_data
         else:
