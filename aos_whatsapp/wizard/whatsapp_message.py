@@ -72,7 +72,7 @@ class WhatsappSendMessage(models.TransientModel):
                         "type": "document",
                         "document": {
                         	"filename": "Document!",
-                        	"link": "https://www.ucm.es/data/cont/media/www/pag-55159/lib1cap10.pdf"
+                        	"link": self.link_document
                         }
                     }
                 ]
