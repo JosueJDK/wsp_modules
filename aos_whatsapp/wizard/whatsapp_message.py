@@ -56,39 +56,39 @@ class WhatsappSendMessage(models.TransientModel):
         # }
 
         message_json = {
-            "messaging_product": "whatsapp",
-            "to": "51935548928",
-            "type": "template",
-            "template": {
-                "name": "message_send_document",
-                "language": {
-                "code": "en_US"
-                },
-                "components": [
+    "messaging_product": "whatsapp",
+    "to": "51935548928",
+    "type": "template",
+    "template": {
+        "name": "message_send_document",
+        "language": {
+           "code": "en_US"
+        },
+        "components": [
+            {
+                "type": "header",
+                "parameters": [
                     {
-                        "type": "header",
-                        "parameters": [
-                            {
-                                "type": "document",
-                                "document": {
-                                    "filename": self.file_document,
-                                    "link": self.link_document
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "type" : "body",
-                        "parameters": [
-                            {
-                            "type": "text",
-                            "text": self.message
-                            }
-                        ] 
+                        "type": "document",
+                        "document": {
+                        	"filename": "Document!",
+                        	"link": "https://www.ucm.es/data/cont/media/www/pag-55159/lib1cap10.pdf"
+                        }
                     }
                 ]
+            },
+            {
+                "type" : "body",
+                "parameters": [
+                    {
+                    "type": "text",
+                    "text": "Este mensaje enviado desde un postman!"
+                    }
+                ] 
             }
-        }
+        ]
+  }
+}
 
         if response_data[0] == True:
             response_wsp_main = response_data[1]
