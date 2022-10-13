@@ -16,6 +16,7 @@ class WhatsappSendMessage(models.TransientModel):
         'wizard_id', 'attachment_id', 'Attachments')
     number_phone = fields.Char(string='Phone Address')
     link_document = fields.Char(string="Link PDF")
+    file_document = fields.Char(string="PDF name")
     template_id = fields.Many2one('mail.template', 'Use template', index=True,) 
 
     def whatsapp_message_post(self):
@@ -24,23 +25,69 @@ class WhatsappSendMessage(models.TransientModel):
         print(response)
 
     def send_message_text(self, preview_url=False):
-        message_json = {
-            "messaging_product": "whatsapp",
-            "recipient_type": 'individual',
-            "to": "51935548928",
-            "type": "text",
-            "text": {"preview_url": preview_url, "body": "message"},
-        }
         config_wsp = self.env['res.config.settings'].search([])
         for rec in config_wsp:
             user_name = rec.user_name
             verify_token = rec.verify_token
         data = {
+                "type" : "authorization",
                 "db_name" : self._cr.dbname,
-                "user_name" : user_name,
-                "message" :  message_json
+                "user_name" : user_name
             }
         response_data = self.request_whatsapp_api_main(data, verify_token)
+        # message_json = {
+        #     "type" : "save_message",
+        #     "db_name" : self._cr.dbname,
+        #     "user_name" : user_name,
+        #     "message_data" : {
+        #         "messaging_product" : "whatsapp",
+        #         "recipient_type" : "individual",
+        #         "recipient_id" : "51935548928",
+        #         "status_code" : "500",
+        #         "type_message" : "template",
+        #         "type_message_body" :"text",
+        #         "text_message" : "Este mensaje enviado desde un postman!",
+        #         "type_message_header" : "document",
+        #         "link_file" : "https://www.ucm.es/data/cont/media/www/pag-55159/lib1cap10.pdf",
+        #         "filename" : "Documento de prueba!"
+        #     }
+        # }
+
+        message_json = {
+            "messaging_product": "whatsapp",
+            "to": "51935548928",
+            "type": "template",
+            "template": {
+                "name": "message_send_document",
+                "language": {
+                "code": "en_US"
+                },
+                "components": [
+                    {
+                        "type": "header",
+                        "parameters": [
+                            {
+                                "type": "document",
+                                "document": {
+                                    "filename": self.file_document,
+                                    "link": self.link_document
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type" : "body",
+                        "parameters": [
+                            {
+                            "type": "text",
+                            "text": self.message
+                            }
+                        ] 
+                    }
+                ]
+            }
+        }
+
         if response_data[0] == True:
             response_wsp_main = response_data[1]
             headers = {
@@ -86,7 +133,7 @@ class WhatsappSendMessage(models.TransientModel):
             result['attachment_ids'] = [(6, 0, is_exists.ids)] if is_exists else []
         return result
 
-    def get_attachment_id(self, active_model, active_id, context):
+    def get_attachment_id(self, active_model, active_id, context, result):
         Attachment = self.env['ir.attachment']
         records = self.env[active_model].browse(active_id)
         is_exists = self.env['ir.attachment']
@@ -119,6 +166,7 @@ class WhatsappSendMessage(models.TransientModel):
                 attachments.append((res_name, res))
                 #attachment_ids = []
                 for attachment in attachments:
+                    result['file_document'] = attachment[0]
                     attachment_data = {
                         'name': attachment[0],
                         'store_fname': attachment[0],
