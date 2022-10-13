@@ -56,6 +56,7 @@
           <field name="name"/>
           <field name="db_name" />
           <field name="ip_server"/>
+          <field name="type_request"/>
           <field name="status_code"/>
           <field name="create_date"/>
         </tree>
