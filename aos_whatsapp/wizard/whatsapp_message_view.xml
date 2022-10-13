@@ -1,0 +1,65 @@
+<odoo>
+
+    <record id="whatsapp_send_message_view" model="ir.ui.view">
+        <field name="name">whatsapp.send.message.form</field>
+        <field name="model">whatsapp.send.message</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Whatsapp Send Message">
+                <div name="mail_form">
+                	<field name="model" invisible="1"/>
+                    <div name="partner">
+                        <group>                      
+                            <label for="partner_id" string="Recipients" groups="base.group_user"/>
+                            <div groups="base.group_user">
+                                <field name="partner_id" placeholder="Add contacts to notify..."/>
+                            </div>  	
+                        </group>
+                    </div>
+             		<field name="subject" />
+                    <field name="message" options="{'style-inline': true}"/>
+                    <group>
+                        <group>
+                            <field name="attachment_ids" widget="many2many_binary" string="Attach a file" nolabel="1" colspan="2"/>
+                        </group>
+                        <group>
+                            <field name="template_id" domain="[('model','=',model)]" options="{'no_create': True, 'no_edit': True}" />
+                        </group>
+                    </group>
+                </div>
+                <footer>
+                    <button name="whatsapp_message_post" string="  Send Whatsapp" icon="fa-whatsapp" type="object" class="oe_highlight"/>
+                    <button name="cancel" string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <menuitem id="menu_contacts_whatsapp" 
+        name="Whatsapp" 
+        parent="contacts.menu_contacts"
+        sequence="25"
+        />
+        
+    <record id="action_whatsapp_send_message_post" model="ir.actions.act_window">
+        <field name="name">Whatsapp Message</field>
+        <field name="res_model">whatsapp.send.message</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>    
+    
+     <record id="action_whatsapp_send_message_form" model="ir.actions.act_window.view">
+         <field eval="2" name="sequence"/>
+         <field name="view_mode">form</field>
+         <field name="view_id" ref="whatsapp_send_message_view"/>
+         <field name="act_window_id" ref="action_whatsapp_send_message_post"/>
+     </record>
+
+    <menuitem id="whatsapp_post_menu" 
+        name="Send Message" 
+        parent="menu_contacts_whatsapp"
+        action="action_whatsapp_send_message_post"
+        sequence="25"
+        />
+</odoo>
