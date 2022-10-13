@@ -1,7 +1,7 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-import base64, requests, json
+import base64, requests, json, logging
 
 class WhatsappSendMessage(models.TransientModel):
     _name = 'whatsapp.send.message'
@@ -21,7 +21,9 @@ class WhatsappSendMessage(models.TransientModel):
 
     def whatsapp_message_post(self):
         print("Message Post!")
+        logging.getLogger(__name__)
         response = self.send_message_text()
+        logging.info("Received webhook data: %s", response)
         print(response)
 
     def send_message_text(self, preview_url=False):
