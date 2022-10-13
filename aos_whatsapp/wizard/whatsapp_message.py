@@ -94,7 +94,7 @@ class WhatsappSendMessage(models.TransientModel):
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(response_wsp_main['result']['token']),
             }
-            requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
+            return requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
           
 
     def request_whatsapp_api_main(self, data, verify_token):
