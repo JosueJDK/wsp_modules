@@ -24,6 +24,7 @@ class WhatsappSendMessage(models.TransientModel):
         logging.getLogger(__name__)
         response = self.send_message_text()
         logging.info("Received webhook data: %s", response)
+        logging.info("Received webhook data: %s", self.link_document)
         print(response)
 
     def send_message_text(self, preview_url=False):
