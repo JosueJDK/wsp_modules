@@ -34,6 +34,7 @@ class WhatsappApiMain(http.Controller):
                 'token' : account_user.token,
                 'url' : account_user.url
             }
+            
         # Create registration of request
         new_request = {
             'name' : '',
