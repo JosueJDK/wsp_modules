@@ -132,7 +132,7 @@ class WhatsappSendMessage(models.TransientModel):
             result['model'] = 'account.move'
             result['partner_id'] = account_move.partner_id.id
             result['link_document'] = account_move.get_link() + "&report_type=pdf"
-            is_exists = self.get_attachment_id(active_model, active_id, context)
+            is_exists = self.get_attachment_id(active_model, active_id, context, result)
             result['attachment_ids'] = [(6, 0, is_exists.ids)] if is_exists else []
         return result
 
