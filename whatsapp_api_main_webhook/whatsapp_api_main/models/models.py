@@ -40,6 +40,10 @@ class AccountsWABA(models.Model):
     def _get_url(self):
         self.url = f"https://graph.facebook.com/v14.0/{self.phone_number_id}/messages"
 
+# class WhatsAppMessagesTemplate(models.Model):
+#     _name = 'whatsapp.api.main.messages.template'
+#     _description = 'Templates de Mensajes'
+#     name =
 
 class WhatsAppMessages(models.Model):
     _name = 'whatsapp.api.main.messages'
