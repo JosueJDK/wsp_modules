@@ -1,60 +1,61 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="whatsapp_api_client.list">
-      <field name="name">whatsapp_api_client list</field>
-      <field name="model">whatsapp_api_client.whatsapp_api_client</field>
+ 
+    <record model="ir.ui.view" id="whatsapp_api_client_messages_tree">
+      <field name="name">whatsapp.api.client.messages.tree</field>
+      <field name="model">whatsapp.api.client.messages</field>
       <field name="arch" type="xml">
-        <tree>
-          <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
+        <tree string="" create="false">
+        <field name="partner_id"/>
+          <field name="name" />
+          <field name="messaging_product"/>
+          <field name="recipient_type"/>
+          <field name="recipient_id"/>
+          <field name="status_code"/>
+          <field name="type_message"/>
         </tree>
       </field>
     </record>
--->
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="whatsapp_api_client.action_window">
-      <field name="name">whatsapp_api_client window</field>
-      <field name="res_model">whatsapp_api_client.whatsapp_api_client</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="whatsapp_api_client.action_server">
-      <field name="name">whatsapp_api_client server</field>
-      <field name="model_id" ref="model_whatsapp_api_client_whatsapp_api_client"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
+    <record model="ir.ui.view" id="whatsapp_api_client_messages_templates_tree">
+      <field name="name">whatsapp.api.client.messages.templates.tree</field>
+      <field name="model">whatsapp.api.client.messages.templates</field>
+      <field name="arch" type="xml">
+        <tree string="">
+          <field name="name" />
+          <field name="template_type"/>
+        </tree>
       </field>
     </record>
--->
 
-    <!-- Top menu item -->
-<!--
-    <menuitem name="whatsapp_api_client" id="whatsapp_api_client.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="whatsapp_api_client.menu_1" parent="whatsapp_api_client.menu_root"/>
-    <menuitem name="Menu 2" id="whatsapp_api_client.menu_2" parent="whatsapp_api_client.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="whatsapp_api_client.menu_1_list" parent="whatsapp_api_client.menu_1"
-              action="whatsapp_api_client.action_window"/>
-    <menuitem name="Server to list" id="whatsapp_api_client" parent="whatsapp_api_client.menu_2"
-              action="whatsapp_api_client.action_server"/>
--->
+    <!--Actions Model-->
+    <record model="ir.actions.act_window" id="action_whatsapp_api_client_messages">
+      <field name="name">Messages</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.client.messages</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+      <p></p>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_whatsapp_api_client_templates_messages">
+      <field name="name">Messages</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.client.messages.templates</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+      <p></p>
+      </field>
+    </record>
+
+    <menuitem name="Messages" id="menu_whatsapp_api_client_messages" parent="menu_contacts_whatsapp"
+          action="action_whatsapp_api_client_messages"/>
+
+
+    <menuitem name="Template Messages" id="menu_whatsapp_api_client_templates_messages" parent="menu_contacts_whatsapp"
+          action="action_whatsapp_api_client_templates_messages"/>
+
+
   </data>
 </odoo>

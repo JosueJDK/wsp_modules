@@ -3,8 +3,8 @@ from odoo import api, fields, models, _
 class base(models.TransientModel):
     _inherit = "res.config.settings"
 
-    user_name = fields.Char(string="User name", required=True)
-    verify_token = fields.Char(string="Token", required=True)
+    user_name = fields.Char(string="User name registreted in whatsapp.api.main", required=True)
+    verify_token = fields.Char(string="Token registreted in whatsapp.api.main", required=True)
 
     @api.model
     def get_values(self):

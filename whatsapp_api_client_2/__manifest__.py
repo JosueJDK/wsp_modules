@@ -20,14 +20,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['mail','base_setup','contacts','account','base'],
+    'depends': ['base_setup'],
 
+    # always loaded
     'data': [
-        'views/res_partner_view.xml',
-        'wizard/whatsapp_message_view.xml',
-        'views/account_invoice.xml',
-        'views/account_payment.xml',
+        # 'security/ir.model.access.csv',
+        'views/views.xml',
+        'views/templates.xml',
+        'views/contact_wa.xml',
         'views/res_config_settings_view.xml',
-        'views/views.xml'
+        'wizard/wh_message_wizard.xml',
     ]
 }
