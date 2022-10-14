@@ -1,11 +1,11 @@
 # See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-import base64, requests, json, logging
+import base64, logging
 from odoo.exceptions import UserError
+from .WhatsApp.WhatsApp import WhatsAppMain
 
-
-_logger = logging.getLogger(__name__)
+logging.getLogger(__name__)
 
 class WhatsappSendMessage(models.TransientModel):
     _name = 'whatsapp.send.message'
@@ -21,7 +21,7 @@ class WhatsappSendMessage(models.TransientModel):
     number_phone = fields.Char(string='Phone Address', require=True)
     link_document = fields.Char(string="Link PDF")
     file_document = fields.Char(string="PDF name")
-    template_id = fields.Many2one('mail.template', 'Use template', index=True)
+    template_id = fields.Many2one('whatsapp.api.client.messages.templates', 'Use template', index=True)
 
     @api.onchange('partner_id')
     def get_phone_number(self):
@@ -33,109 +33,75 @@ class WhatsappSendMessage(models.TransientModel):
         if number_mobile:
             print(number_mobile)
             self.number_phone = number_mobile
+        else:
+            self.number_phone = ""
 
     def whatsapp_message_post(self):
-        if self.number_phone and self.number_phone[0] != "9" and len(self.number_phone) != 9 and self.number_phone == "":
+        if not self.number_phone or self.number_phone[0] != "9" or len(self.number_phone) != 9 or self.number_phone == "":
             raise UserError(_('El numero ingresado no es valido!'))
-        response = self.send_message_text()
-        return response
+        if not self.message:
+            raise UserError(_('El cuerpo del mensaje no puede estar vacio!'))
+        else:
+            logging.info("Mensaje enviado!")
+            self._request_whatsapp_api_main()
+    
+    def create_message_whatsapp_client(self, data_save_message):
+        model_message = self.env['whatsapp.api.client.messages'].sudo()
+        new_message = {
+            'name' : '',
+            'partner_id' : self.partner_id.id,
+            'messaging_product' : data_save_message['message_data']['messaging_product'],
+            'recipient_type' : data_save_message['message_data']['recipient_type'],
+            'recipient_id' : data_save_message['message_data']['recipient_id'],
+            'status_code' : str(data_save_message['message_data']['status_code']),
+            'type_message' : data_save_message['message_data']['type_message'],
+            'text_message' : data_save_message['message_data']['text_message'],
+            'link_file' : data_save_message['message_data']['link_file'],
+            'filename' : data_save_message['message_data']['filename'],
+        }
+        model_message.create(new_message)
 
-    def send_message_text(self):
+    def _request_whatsapp_api_main(self):
         config_wsp = self.env['res.config.settings'].search([])
         for rec in config_wsp:
             user_name = rec.user_name
-            verify_token = rec.verify_token
-        data = {
-                "type" : "authorization",
-                "db_name" : self._cr.dbname,
-                "user_name" : user_name
-            }
-        response_data = self.request_whatsapp_api_main(data, verify_token)
-        message_json = self._generate_message_json()
+            token_verify = rec.verify_token
+        db_name = self._cr.dbname
 
-        if response_data[0] == True:
-            response_wsp_main = response_data[1]
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(response_wsp_main['result']['token']),
-            }
-            res =  requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
-            res_status = res.status_code
-            save_message_main = self._generate_save_message_json(user_name, message_json, res_status)
-            self.request_whatsapp_api_main(save_message_main, verify_token)
-            return res
+        new_object = WhatsAppMain(user_name, token_verify, db_name)
+        authorization_request = new_object.request_authorization_whatsapp()
+        
+        logging.info("Received webhook data: %s", authorization_request)
+        if authorization_request[0] == True:
+            component_header = False
+            component_body = False
+            if self.model == "res.partner":
+                message_json = new_object._send_message_template('hello_world', self.number_phone)
 
-    def _generate_save_message_json(self, user_name, message_json, status_code):
-        return {
-            "type" : "save_message",
-            "db_name" : self._cr.dbname,
-            "user_name" : user_name,
-            "message_data" : {
-                "messaging_product" : message_json["messaging_product"],
-                "recipient_type" : message_json["recipient_type"],
-                "recipient_id" : "51" + self.number_phone,
-                "status_code" : status_code,
-                "type_message" : message_json["type"],
-                "type_message_body" :message_json['template']['components'][1]['parameters'][0]['type'],
-                "text_message" : self.message,
-                "type_message_header" : message_json['template']['components'][0]['parameters'][0]['type'],
-                "link_file" : self.link_document,
-                "filename" : self.file_document
-            }
-        }
+            elif self.model == "account.move":
+                component_header = new_object.create_message_components_header(self.file_document, self.link_document)
+                logging.info("Received webhook component_header: %s", component_header)
+                component_body = new_object.create_message_components_body(self.message)
+                logging.info("Received webhook component_body: %s", component_body)
+                components = [component_header, component_body]
+                logging.info("Received webhook components: %s", components)
+                message_json = new_object._send_message_template("message_send_document", self.number_phone, components)
+                logging.info("Received webhook message_json: %s", message_json)
+            else:
+                message_json = new_object._send_message_template('hello_world', self.number_phone)
 
-    def _generate_message_json(self):
-        return {
-            "messaging_product": "whatsapp",
-            "recipient_type" : "individual",
-            "to": "51" + self.number_phone,
-            "type": "template",
-            "template": {
-                "name": "message_send_document",
-                "language": {
-                "code": "en_US"
-                },
-                "components": [
-                    {
-                        "type": "header",
-                        "parameters": [
-                            {
-                                "type": "document",
-                                "document": {
-                                    "filename": self.file_document,
-                                    "link": self.link_document
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "type" : "body",
-                        "parameters": [
-                            {
-                            "type": "text",
-                            "text":self.message
-                            }
-                        ] 
-                    }
-                ]
-            }
-        }
-
-    def request_whatsapp_api_main(self, data, verify_token):
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization" : f"Bearer {verify_token}"
-        }
-        response = requests.post('https://93aa-181-65-18-158.sa.ngrok.io/api/home', headers=headers, json=data)
-        my_json = response.content.decode('utf8').replace("'",'"')
-
-        response_data = json.loads(my_json)
-        _logger.info("JSON ERROR {}".format(response_data))
-        if response.status_code == 200:
-            return True, response_data
+            logging.info("Received webhook authorization_request: %s", authorization_request)
+            response_wasapi = new_object.send_message_whatsapp(authorization_request, message_json)
+            logging.info("Received webhook response_wasapi: %s", response_wasapi)
+            data_save_message = new_object._generate_save_message_json(response_wasapi[1], self.number_phone, component_body, component_header)
+            logging.info("Received webhook data_save_message: %s", data_save_message)
+            logging.info("Received webhook request_save_message_whatsapp: %s", new_object.request_save_message_whatsapp(data_save_message))
+            logging.info("Received webhook self.create_message_whatsapp_client: %s", self.create_message_whatsapp_client(data_save_message))
+            if response_wasapi[1] != 200:
+                raise UserError(_('El mensaje no fue enviado correctamente!!'))
         else:
-            return False, response_data
-
+            raise UserError(_('No tiene autorizacion para enviar mensajes contacte con la empresa proveedora para mas informacion!'))
+            
     @api.model
     def default_get(self, fields):
         result = super(WhatsappSendMessage, self).default_get(fields)

@@ -3,20 +3,25 @@ from odoo import models, fields, api
 from odoo import exceptions
 
 class WhatsAppMessages(models.Model):
-    _name = 'whatsapp.api.main.messages'
+    _name = 'whatsapp.api.client.messages'
     _description = 'Registro de Mensajes'
     _order = 'create_date desc'
 
     name = fields.Char(string="Name Message", default="/",readonly=True)
+    partner_id = fields.Many2one('res.partner', string='Contact', require=True)
     messaging_product = fields.Char(string="Meta Service", default="whatsapp", readonly=True)
     recipient_type = fields.Char(string="Type of recipient", default="individual", readonly=True)
     recipient_id = fields.Char(string="Number of recipient", readonly=True)
     status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized'), ('err', 'Error')], string='Code Status Request', default='err', readonly=True)
+    type_message = fields.Char(string="Type of message send", readonly=True)
+    text_message = fields.Char(string="Data of message", readonly=True)
+    link_file = fields.Char(string="URL of the File", readonly=True)
+    filename = fields.Char(string="Name of the file", readonly=True)
 
     def create(self, vals):
         self._cr.execute("""
             select	max(split_part(name,'/',2)::int)
-                            from whatsapp_api_main_messages where name != '/'
+                            from whatsapp_api_client_messages where name != '/'
         """)
         max_num = self._cr.fetchone()
         max_num = max_num[0]+1 if max_num[0] else 1
@@ -30,18 +35,9 @@ class WhatsAppMessages(models.Model):
     def unlink(self):
         raise exceptions.Warning('No puedes eliminar registros de Mensajes!')
 
-class WhatsAppMessagesLine(models.Model):
-    _name = 'whatsapp.api.main.messages.line'
-    _description = 'Registro del contenido de Mensajes'
-    _order = 'create_date desc'
+class WhatsAppMessagesTemplate(models.Model):
+    _name = 'whatsapp.api.client.messages.templates'
+    _description = 'Registro de Templates Mensajes'
 
-    message_id = fields.Many2one('whatsapp.api.main.messages', string="Id Message", readonly=True)
-    type_message = fields.Char(string="Type of message send", readonly=True)
-    type_message_body = fields.Char(string="Type of message body", readonly=True)
-    text_message = fields.Char(string="Data of message", readonly=True)
-    type_message_header = fields.Char(string="Type of message header", readonly=True)
-    link_file = fields.Char(string="URL of the File", readonly=True)
-    filename = fields.Char(string="Name of the file(Only document)", readonly=True)
-
-    def unlink(self):
-        raise exceptions.Warning('No puedes eliminar registros de Mensajes!')
+    name = fields.Char(string="Name Message", default="/")
+    template_type = fields.Char(string="Tipo de Template")
