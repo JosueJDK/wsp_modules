@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_whatsapp_api_client_message,WhatsApp Api Client,model_whatsapp_api_client_messages,base.group_user,1,1,1,1
+access_whatsapp_api_client_templates,WhatsApp Api Templates,model_whatsapp_api_client_messages_templates,base.group_user,1,1,1,1
+access_whatsapp_api_client_wizard,WhatsApp Api Wizard,model_whatsapp_send_message,base.group_user,1,1,1,1

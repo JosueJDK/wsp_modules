@@ -23,6 +23,7 @@
     'depends': ['mail','base_setup','contacts','account','base'],
 
     'data': [
+        'security/ir.model.access.csv',
         'views/res_partner_view.xml',
         'wizard/whatsapp_message_view.xml',
         'views/account_invoice.xml',
