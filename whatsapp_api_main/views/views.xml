@@ -116,12 +116,12 @@
 
     <!-- Top menu item -->
 
-    <menuitem name="WhatsApp Api" id="menu_whatsapp_api_main_menu_root" sequence="10"/>
+    <menuitem name="WhatsApp Api" id="menu_whatsapp_api_main_menu_root" sequence="10" groups="base.group_user"/>
 
     <!-- menu categories -->
 
-    <menuitem name="Configuration" id="menu_whatsapp_api_main_users_categ" parent="menu_whatsapp_api_main_menu_root" sequence="0"/>
-    <menuitem name="Reportes" id="menu_whatsapp_api_main_reportes_categ" parent="menu_whatsapp_api_main_menu_root" sequence="5"/>
+    <menuitem name="Configuration" id="menu_whatsapp_api_main_users_categ" parent="menu_whatsapp_api_main_menu_root" sequence="0" groups="base.group_user"/>
+    <menuitem name="Reportes" id="menu_whatsapp_api_main_reportes_categ" parent="menu_whatsapp_api_main_menu_root" sequence="5" groups="base.group_user"/>
     <!-- <menuitem name="Menu 2" id="whatsapp_api_main.menu_2" parent="whatsapp_api_main.menu_root"/> -->
 
     <!-- actions -->
