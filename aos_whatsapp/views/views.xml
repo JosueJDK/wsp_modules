@@ -1,0 +1,34 @@
+<odoo>
+  <data>
+ 
+    <record model="ir.ui.view" id="whatsapp_api_main_messages_tree">
+      <field name="name">whatsapp.api.main.messages.tree</field>
+      <field name="model">whatsapp.api.main.messages</field>
+      <field name="arch" type="xml">
+        <tree string="" create="false">
+          <field name="name" />
+          <field name="messaging_product"/>
+          <field name="recipient_type"/>
+          <field name="recipient_id"/>
+          <field name="status_code"/>
+        </tree>
+      </field>
+    </record>
+
+
+    <!--Actions Model-->
+    <record model="ir.actions.act_window" id="action_whatsapp_api_main_messages">
+      <field name="name">Messages</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">whatsapp.api.main.messages</field>
+      <field name="view_mode">tree,form</field>
+      <field name="help" type="html">
+      <p></p>
+      </field>
+    </record>
+
+    <menuitem name="Messages" id="menu_whatsapp_api_main_messages" parent="menu_contacts_whatsapp"
+          action="action_whatsapp_api_main_messages"/>
+
+  </data>
+</odoo>

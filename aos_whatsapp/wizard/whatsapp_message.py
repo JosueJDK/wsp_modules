@@ -2,32 +2,45 @@
 
 from odoo import api, fields, models, _
 import base64, requests, json, logging
+from odoo.exceptions import UserError
+
+
+_logger = logging.getLogger(__name__)
 
 class WhatsappSendMessage(models.TransientModel):
     _name = 'whatsapp.send.message'
     _description = "Whatsapp Message"
 
-    partner_id = fields.Many2one('res.partner', string='Contact')
+    partner_id = fields.Many2one('res.partner', string='Contact', require=True)
     subject = fields.Char('Subject')
-    message = fields.Text()
+    message = fields.Text(require=True)
     model = fields.Char('Object')
     attachment_ids = fields.Many2many(
         'ir.attachment', 'whatsapp_send_message_ir_attachments_rel',
         'wizard_id', 'attachment_id', 'Attachments')
-    number_phone = fields.Char(string='Phone Address')
+    number_phone = fields.Char(string='Phone Address', require=True)
     link_document = fields.Char(string="Link PDF")
     file_document = fields.Char(string="PDF name")
-    template_id = fields.Many2one('mail.template', 'Use template', index=True,) 
+    template_id = fields.Many2one('mail.template', 'Use template', index=True)
+
+    @api.onchange('partner_id')
+    def get_phone_number(self):
+        number_phone = self.partner_id.phone
+        number_mobile = self.partner_id.mobile
+        if number_phone:
+            print(number_phone)
+            self.number_phone = number_phone
+        if number_mobile:
+            print(number_mobile)
+            self.number_phone = number_mobile
 
     def whatsapp_message_post(self):
-        print("Message Post!")
-        logging.getLogger(__name__)
+        if self.number_phone and self.number_phone[0] != "9" and len(self.number_phone) != 9 and self.number_phone == "":
+            raise UserError(_('El numero ingresado no es valido!'))
         response = self.send_message_text()
-        logging.info("Received webhook data: %s", response)
-        logging.info("Received webhook data: %s", self.link_document)
-        print(response)
+        return response
 
-    def send_message_text(self, preview_url=False):
+    def send_message_text(self):
         config_wsp = self.env['res.config.settings'].search([])
         for rec in config_wsp:
             user_name = rec.user_name
@@ -38,58 +51,7 @@ class WhatsappSendMessage(models.TransientModel):
                 "user_name" : user_name
             }
         response_data = self.request_whatsapp_api_main(data, verify_token)
-        # message_json = {
-        #     "type" : "save_message",
-        #     "db_name" : self._cr.dbname,
-        #     "user_name" : user_name,
-        #     "message_data" : {
-        #         "messaging_product" : "whatsapp",
-        #         "recipient_type" : "individual",
-        #         "recipient_id" : "51935548928",
-        #         "status_code" : "500",
-        #         "type_message" : "template",
-        #         "type_message_body" :"text",
-        #         "text_message" : "Este mensaje enviado desde un postman!",
-        #         "type_message_header" : "document",
-        #         "link_file" : "https://www.ucm.es/data/cont/media/www/pag-55159/lib1cap10.pdf",
-        #         "filename" : "Documento de prueba!"
-        #     }
-        # }
-
-        message_json = {
-    "messaging_product": "whatsapp",
-    "to": "51935548928",
-    "type": "template",
-    "template": {
-        "name": "message_send_document",
-        "language": {
-           "code": "en_US"
-        },
-        "components": [
-            {
-                "type": "header",
-                "parameters": [
-                    {
-                        "type": "document",
-                        "document": {
-                        	"filename": "Document!",
-                        	"link": self.link_document
-                        }
-                    }
-                ]
-            },
-            {
-                "type" : "body",
-                "parameters": [
-                    {
-                    "type": "text",
-                    "text": "Este mensaje enviado desde un postman!"
-                    }
-                ] 
-            }
-        ]
-  }
-}
+        message_json = self._generate_message_json()
 
         if response_data[0] == True:
             response_wsp_main = response_data[1]
@@ -97,18 +59,78 @@ class WhatsappSendMessage(models.TransientModel):
                 "Content-Type": "application/json",
                 "Authorization": "Bearer {}".format(response_wsp_main['result']['token']),
             }
-            return requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
-          
+            res =  requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
+            res_status = res.status_code
+            save_message_main = self._generate_save_message_json(user_name, message_json, res_status)
+            self.request_whatsapp_api_main(save_message_main, verify_token)
+            return res
+
+    def _generate_save_message_json(self, user_name, message_json, status_code):
+        return {
+            "type" : "save_message",
+            "db_name" : self._cr.dbname,
+            "user_name" : user_name,
+            "message_data" : {
+                "messaging_product" : message_json["messaging_product"],
+                "recipient_type" : message_json["recipient_type"],
+                "recipient_id" : "51" + self.number_phone,
+                "status_code" : status_code,
+                "type_message" : message_json["type"],
+                "type_message_body" :message_json['template']['components'][1]['parameters'][0]['type'],
+                "text_message" : self.message,
+                "type_message_header" : message_json['template']['components'][0]['parameters'][0]['type'],
+                "link_file" : self.link_document,
+                "filename" : self.file_document
+            }
+        }
+
+    def _generate_message_json(self):
+        return {
+            "messaging_product": "whatsapp",
+            "recipient_type" : "individual",
+            "to": "51" + self.number_phone,
+            "type": "template",
+            "template": {
+                "name": "message_send_document",
+                "language": {
+                "code": "en_US"
+                },
+                "components": [
+                    {
+                        "type": "header",
+                        "parameters": [
+                            {
+                                "type": "document",
+                                "document": {
+                                    "filename": self.file_document,
+                                    "link": self.link_document
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type" : "body",
+                        "parameters": [
+                            {
+                            "type": "text",
+                            "text":self.message
+                            }
+                        ] 
+                    }
+                ]
+            }
+        }
 
     def request_whatsapp_api_main(self, data, verify_token):
         headers = {
             "Content-Type": "application/json",
             "Authorization" : f"Bearer {verify_token}"
         }
-        response = requests.post('https://063c-181-65-18-158.sa.ngrok.io/api/home', headers=headers, json=data)
+        response = requests.post('https://93aa-181-65-18-158.sa.ngrok.io/api/home', headers=headers, json=data)
         my_json = response.content.decode('utf8').replace("'",'"')
+
         response_data = json.loads(my_json)
-        print(response_data)
+        _logger.info("JSON ERROR {}".format(response_data))
         if response.status_code == 200:
             return True, response_data
         else:
@@ -118,7 +140,6 @@ class WhatsappSendMessage(models.TransientModel):
     def default_get(self, fields):
         result = super(WhatsappSendMessage, self).default_get(fields)
         context = dict(self._context or {})
-        partners = self.env['res.partner']
 
         active_model = context.get('active_model')
         active_id = context.get('active_id')

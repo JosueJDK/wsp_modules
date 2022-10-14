@@ -13,10 +13,13 @@
                             <label for="partner_id" string="Recipients" groups="base.group_user"/>
                             <div groups="base.group_user">
                                 <field name="partner_id" placeholder="Add contacts to notify..."/>
-                            </div>  	
+                            </div>
+                            <label for="number_phone" string="Phone Number:" groups="base.group_user"/>
+                            <div groups="base.group_user">
+                                <field name="number_phone" />
+                            </div>	
                         </group>
                     </div>
-             		<field name="subject" />
                     <field name="message" options="{'style-inline': true}"/>
                     <group>
                         <group>

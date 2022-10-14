@@ -9,12 +9,13 @@
     'website': 'https://www.alphasoft.co.id/',
     'summary': 'This module is used for Whatsapp Client Connection',
     'category': 'Extra Tools',
-    'depends': ['mail','base_setup','contacts','account'],
+    'depends': ['mail','base_setup','contacts','account','base'],
     'data': [
         'views/res_partner_view.xml',
         'wizard/whatsapp_message_view.xml',
         'views/account_invoice.xml',
         'views/account_payment.xml',
         'views/res_config_settings_view.xml',
+        'views/views.xml'
     ]
 }
