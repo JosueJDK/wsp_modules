@@ -26,7 +26,6 @@
         'views/res_partner_view.xml',
         'wizard/whatsapp_message_view.xml',
         'views/account_invoice.xml',
-        'views/account_payment.xml',
         'views/res_config_settings_view.xml',
         'views/views.xml'
     ]
