@@ -9,7 +9,6 @@ class WhatsappApiMain(http.Controller):
         data_request = request.env['whatsapp.api.main.requests'].sudo()
         data_users = request.env['whatsapp.api.main.users'].sudo()
         data_message = request.env['whatsapp.api.main.messages'].sudo()
-        data_message_line = request.env['whatsapp.api.main.messages.line'].sudo()
 
         headers = request.httprequest.headers
         data = request.jsonrequest
@@ -66,19 +65,13 @@ class WhatsappApiMain(http.Controller):
                 'messaging_product' : data['message_data']['messaging_product'],
                 'recipient_type' : data['message_data']['recipient_type'],
                 'recipient_id' : data['message_data']['recipient_id'],
-                'status_code' : data['message_data']['status_code']
+                'status_code' : str(data['message_data']['status_code']),
+                'type_message' : data['message_data']['type_message'],
+                'text_message' : data['message_data']['text_message'],
+                'link_file' : data['message_data']['link_file'],
+                'filename' : data['message_data']['filename'],
             }
-            create_message = data_message.create(new_message)
-            new_message_line = {
-                'message_id': create_message.id,
-                'type_message': data['message_data']['type_message'],
-                'type_message_body': data['message_data']['type_message_body'],
-                'text_message': data['message_data']['text_message'],
-                'type_message_header': data['message_data']['type_message_header'],
-                'link_file': data['message_data']['link_file'],
-                'filename': data['message_data']['filename']
-            }
-            data_message_line.create(new_message_line)
+            data_message.create(new_message)
         return data_response
     
     def check_user_authenticate(self, data, headers, data_users):
@@ -88,7 +81,7 @@ class WhatsappApiMain(http.Controller):
         # Search user_account
         account_user = data_users.search([('name', '=', user_name)])
 
-        if account_user.token_verify == authorization:
+        if account_user.token_verify == authorization and account_user.state_service == True:
             return account_user
         else:
             return False

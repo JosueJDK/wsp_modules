@@ -10,6 +10,7 @@
             <group name="group_top">
               <group name="group_left">
                 <field name="name"/>
+                <field name="state_service" />
                 <field name="token_verify"/>
               </group>
               <group name="group_right">
@@ -40,6 +41,7 @@
             <field name="arch" type="xml">
                 <tree string="">
                     <field name="name"/>
+                    <field name="state_service" />
                     <field name="token_verify" password="True"/>
                     <field name="phone_number_id"/>
                     <field name="token" password="True"/>
@@ -75,6 +77,7 @@
           <field name="recipient_type"/>
           <field name="recipient_id"/>
           <field name="status_code"/>
+          <field name="type_message"/>
         </tree>
       </field>
     </record>
