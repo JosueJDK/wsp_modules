@@ -57,8 +57,8 @@ class WhatsAppMain(object):
                     "status_code" : status_code,
                     "type_message" : "template",
                     "text_message" : component_text['parameters'][0]['text'],
-                    "link_file" : component_document['parameters'][0]['document']['filename'],
-                    "filename" : component_document['parameters'][0]['document']['link']
+                    "link_file" : component_document['parameters'][0]['document']['link'],
+                    "filename" : component_document['parameters'][0]['document']['filename']
                 }
             }
         elif component_text:
