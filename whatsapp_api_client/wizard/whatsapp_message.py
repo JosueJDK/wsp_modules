@@ -41,6 +41,8 @@ class WhatsappSendMessage(models.TransientModel):
             raise UserError(_('El numero ingresado no es valido!'))
         if not self.message:
             raise UserError(_('El cuerpo del mensaje no puede estar vacio!'))
+        if not self.template_id:
+            raise UserError(_('Debe seleccionar una plantilla!'))
         else:
             logging.info("Mensaje enviado!")
             self._request_whatsapp_api_main()
@@ -76,7 +78,7 @@ class WhatsappSendMessage(models.TransientModel):
             component_header = False
             component_body = False
             if self.model == "res.partner":
-                message_json = new_object._send_message_template('hello_world', self.number_phone)
+                message_json = new_object._send_message_template(self.template_id.name, self.number_phone)
 
             elif self.model == "account.move":
                 component_header = new_object.create_message_components_header(self.file_document, self.link_document)
@@ -85,7 +87,7 @@ class WhatsappSendMessage(models.TransientModel):
                 logging.info("Received webhook component_body: %s", component_body)
                 components = [component_header, component_body]
                 logging.info("Received webhook components: %s", components)
-                message_json = new_object._send_message_template("message_send_document", self.number_phone, components)
+                message_json = new_object._send_message_template(self.template_id.name, self.number_phone, components)
                 logging.info("Received webhook message_json: %s", message_json)
             else:
                 message_json = new_object._send_message_template('hello_world', self.number_phone)

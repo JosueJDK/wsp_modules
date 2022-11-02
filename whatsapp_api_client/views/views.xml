@@ -40,7 +40,7 @@
     </record>
 
     <record model="ir.actions.act_window" id="action_whatsapp_api_client_templates_messages">
-      <field name="name">Messages</field>
+      <field name="name">Template Messages</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">whatsapp.api.client.messages.templates</field>
       <field name="view_mode">tree,form</field>
