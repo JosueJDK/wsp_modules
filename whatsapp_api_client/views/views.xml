@@ -23,7 +23,6 @@
       <field name="arch" type="xml">
         <tree string="">
           <field name="name" />
-          <field name="template_type"/>
         </tree>
       </field>
     </record>

@@ -39,5 +39,4 @@ class WhatsAppMessagesTemplate(models.Model):
     _name = 'whatsapp.api.client.messages.templates'
     _description = 'Registro de Templates Mensajes'
 
-    name = fields.Char(string="Name Message", default="/")
-    template_type = fields.Char(string="Tipo de Template")
+    name = fields.Char(string="Name Message", required=True)
