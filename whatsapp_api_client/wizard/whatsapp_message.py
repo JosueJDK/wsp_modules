@@ -37,6 +37,7 @@ class WhatsappSendMessage(models.TransientModel):
             self.number_phone = ""
 
     def whatsapp_message_post(self):
+        logging.info(f"template not selected! {self.template_id}")
         if not self.number_phone or self.number_phone[0] != "9" or len(self.number_phone) != 9 or self.number_phone == "":
             raise UserError(_('El numero ingresado no es valido!'))
         if not self.message:
