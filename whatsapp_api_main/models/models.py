@@ -8,11 +8,11 @@ class WhatsAppRequests(models.Model):
     _description = 'Registro de solicitudes'
     _order = 'create_date desc'
 
-    name = fields.Char(string="ID Requets", default="/",readonly=True)
-    db_name = fields.Char(string="DataBase Name", require=True, readonly=True)
-    ip_server = fields.Char(string="Direction IP of Servidor", require=True, readonly=True)
+    name = fields.Char(string="ID SOLICITUd", default="/",readonly=True)
+    db_name = fields.Char(string="Nom. Base Datos", require=True, readonly=True)
+    ip_server = fields.Char(string="Direccion IP del Servidor", require=True, readonly=True)
     type_request = fields.Char(string="Tipo de Solicitud!")
-    status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized')], string='Code Status Request', default='401', readonly=True)
+    status_code = fields.Selection(selection=[('200', 'Done'),('401', 'Unauthorized')], string='Codigo de estado', default='401', readonly=True)
 
     def create(self, vals):
         self._cr.execute("""
@@ -32,12 +32,12 @@ class AccountsWABA(models.Model):
     _name = 'whatsapp.api.main.users'
     _description = 'Credenciales de WhatsApp Bussines Api Cloud'
 
-    name = fields.Char(string="Name", require=True)
+    name = fields.Char(string="Nombre Usuario", require=True)
     state_service = fields.Boolean(string="Estado!")
-    token_verify = fields.Char(string="Token Requests", require=True)
-    phone_number_id = fields.Char(string="Id phone number", require=True)
-    token = fields.Char(string="Token WABA", requiere=True)
-    url = fields.Char(string="URL complete", compute='_get_url')
+    token_verify = fields.Char(string="Clave Acceso Usuario", require=True)
+    phone_number_id = fields.Char(string="Id numero Telefono", require=True)
+    token = fields.Char(string="Token WhatsApp", requiere=True)
+    url = fields.Char(string="URL BASE", compute='_get_url')
     
     @api.depends('phone_number_id')
     def _get_url(self):
@@ -49,16 +49,16 @@ class WhatsAppMessages(models.Model):
     _description = 'Registro de Mensajes'
     _order = 'create_date desc'
 
-    name = fields.Char(string="Name Message", default="/",readonly=True)
-    id_request = fields.Many2one('whatsapp.api.main.requests', string="Id request", readonly=True)
-    messaging_product = fields.Char(string="Meta Service", default="whatsapp", readonly=True)
-    recipient_type = fields.Char(string="Type of recipient", default="individual", readonly=True)
-    recipient_id = fields.Char(string="Number of recipient", readonly=True)
-    status_code = fields.Selection(selection=[('200', 'Done'), ('err', 'Error')], string='Code Status Request', default='err', readonly=True)
-    type_message = fields.Char(string="Type of message send", readonly=True)
-    text_message = fields.Char(string="Data of message", readonly=True)
-    link_file = fields.Char(string="URL of the File", readonly=True)
-    filename = fields.Char(string="Name of the file(Only document)", readonly=True)
+    name = fields.Char(string="Nom. Mensaje", default="/",readonly=True)
+    id_request = fields.Many2one('whatsapp.api.main.requests', string="Id Solicitud", readonly=True)
+    messaging_product = fields.Char(string="Tipo de Servicio", default="whatsapp", readonly=True)
+    recipient_type = fields.Char(string="Tipo de Receptor", default="individual", readonly=True)
+    recipient_id = fields.Char(string="Numero Receptor", readonly=True)
+    status_code = fields.Selection(selection=[('200', 'Done'), ('err', 'Error')], string='Codigo Estado', default='err', readonly=True)
+    type_message = fields.Char(string="Tipo de Mensaje", readonly=True)
+    text_message = fields.Char(string="Contenido del Mensaje", readonly=True)
+    link_file = fields.Char(string="URL del archivo", readonly=True)
+    filename = fields.Char(string="Nombre del rchivo(Solo documentos)", readonly=True)
 
     def create(self, vals):
         self._cr.execute("""
