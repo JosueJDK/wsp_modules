@@ -75,7 +75,7 @@ class WhatsappSendMessage(models.TransientModel):
         authorization_request = new_object.request_authorization_whatsapp()
         
         logging.info("Received webhook data: %s", authorization_request)
-        if authorization_request[0] == True:
+        if authorization_request == 200:
             component_header = False
             component_body = False
             if self.model == "res.partner":
@@ -92,15 +92,16 @@ class WhatsappSendMessage(models.TransientModel):
                 logging.info("Received webhook message_json: %s", message_json)
             else:
                 message_json = new_object._send_message_template('hello_world', self.number_phone)
-
-            logging.info("Received webhook authorization_request: %s", authorization_request)
+            
             response_wasapi = new_object.send_message_whatsapp(authorization_request, message_json)
-            logging.info("Received webhook response_wasapi: %s", response_wasapi)
-            data_save_message = new_object._generate_save_message_json(response_wasapi[1], self.number_phone, component_body, component_header)
-            logging.info("Received webhook data_save_message: %s", data_save_message)
-            logging.info("Received webhook request_save_message_whatsapp: %s", new_object.request_save_message_whatsapp(data_save_message))
-            logging.info("Received webhook self.create_message_whatsapp_client: %s", self.create_message_whatsapp_client(data_save_message))
-            if response_wasapi[1] != 200:
+            
+            data_save_message = new_object._generate_save_message_json(response_wasapi, self.number_phone, component_body, component_header)
+
+            #Crear registro de mensajes en el servidor principal y en el cliente
+            new_object.request_save_message_whatsapp(data_save_message)
+            self.create_message_whatsapp_client(data_save_message)
+            
+            if response_wasapi != 200:
                 raise UserError(_('El mensaje no fue enviado correctamente!!'))
         else:
             raise UserError(_('No tiene autorizacion para enviar mensajes contacte con la empresa proveedora para mas informacion!'))

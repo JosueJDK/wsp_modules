@@ -36,6 +36,15 @@ class WhatsappApiMain(http.Controller):
                 data_response = {
                     'Ok' : data['message_data']
                 }
+
+            elif data['type'] == 'SendMessageWhatsapp':                
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer {}".format(verification_status.token),
+                }
+                res =  requests.post(f"{verification_status.url}", headers=headers, json=data['message_json'])
+                Response.status = res.status_code
+                
             else:
                 Response.status = '401'
                 data['type'] = 'Desconocido!'

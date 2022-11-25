@@ -7,19 +7,17 @@ class WhatsAppMain(object):
         self._user_name = user_name
         self._token_verify = token_verify
         self._db_name = db_name
+        self.url_base = 'https://cb4a-181-65-18-158.sa.ngrok.io/api/home'
 
     def request_whatsapp_api_main(self, data):
         headers = {
             "Content-Type": "application/json",
             "Authorization" : f"Bearer {self._token_verify}"
         }
-        response = requests.post('https://cb4a-181-65-18-158.sa.ngrok.io/api/home', headers=headers, json=data)
+        response = requests.post(self.url_base, headers=headers, json=data)
         my_json = response.content.decode('utf8').replace("'",'"')
         response_data = json.loads(my_json)
-        if response.status_code == 200:
-            return True, response_data
-        else:
-            return False, response_data
+        return response.status_code
 
     def request_authorization_whatsapp(self):
         data = {
@@ -33,15 +31,23 @@ class WhatsAppMain(object):
         return self.request_whatsapp_api_main(data_message)
     
     def send_message_whatsapp(self, response_data, message_json):
-        if response_data[0] == True:
-            response_wsp_main = response_data[1]
+        if response_data == 200:
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer {}".format(response_wsp_main['result']['token']),
+                "Authorization" : f"Bearer {self._token_verify}"
             }
-            res =  requests.post(f"{response_wsp_main['result']['url']}", headers=headers, json=message_json)
-            res_status = res.status_code
-            return res, res_status
+
+            data = {
+                "type" : "SendMessageWhatsapp",
+                "db_name" : self._db_name,
+                "user_name" : self._user_name,
+                "message_json" : message_json
+            }
+
+            response = requests.post(self.url_base, headers=headers, json=data)
+            my_json = response.content.decode('utf8').replace("'",'"')
+            response_data = json.loads(my_json)
+            return response.status_code
 
 
     def _generate_save_message_json(self, status_code, number_phone, component_text=False, component_document=False):
