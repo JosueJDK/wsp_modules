@@ -6,10 +6,6 @@ import requests
 import json
 import re
 import time
-import logging
-
-_logger = logging.getLogger(__name__)
-
 
 class Partner(models.Model):
     """Inherit Partner."""
