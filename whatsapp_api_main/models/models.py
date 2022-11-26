@@ -41,7 +41,7 @@ class AccountsWABA(models.Model):
     
     @api.depends('phone_number_id')
     def _get_url(self):
-        self.url = f"https://graph.facebook.com/v14.0/{self.phone_number_id}/messages"
+        self.url = f"https://graph.facebook.com/v15.0/{self.phone_number_id}/messages"
 
 
 class WhatsAppMessages(models.Model):

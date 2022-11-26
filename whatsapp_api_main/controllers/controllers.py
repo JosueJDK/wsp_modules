@@ -2,6 +2,7 @@
 from odoo import _,http
 from odoo.http import request, Response
 import requests
+from passlib.context import CryptContext
 
 class WhatsappApiMain(http.Controller):
     @http.route('/api/home', auth='public', type='json', csrf=False, website=False, methods=['GET', 'POST'])
@@ -28,9 +29,7 @@ class WhatsappApiMain(http.Controller):
             if data['type'] == 'authorization':
                 Response.status = '200'
                 data_response = {
-                    'status' : Response.status,
-                    'token' : verification_status.token,
-                    'url' : verification_status.url
+                    'status' : Response.status
                 }
             elif data['type'] == 'save_message':
                 Response.status = '200'
@@ -91,10 +90,12 @@ class WhatsappApiMain(http.Controller):
         authorization = headers['Authorization'].split(" ")[1]
         data_base_name = data['db_name']
         user_name = data['user_name']
-        # Search user_account
+        # Search user_account        
         account_user = data_users.search([('name', '=', user_name)])
+        
+        pwd_context = CryptContext(schemes=['pbkdf2_sha512'], deprecated="auto")        
 
-        if account_user.token_verify == authorization and account_user.state_service == True:
+        if pwd_context.verify(account_user.token_verify, authorization) and account_user.state_service == True:
             return account_user
         else:
             return False
