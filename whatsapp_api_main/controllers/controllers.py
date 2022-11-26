@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import _,http
 from odoo.http import request, Response
+import requests
 
 class WhatsappApiMain(http.Controller):
     @http.route('/api/home', auth='public', type='json', csrf=False, website=False, methods=['GET', 'POST'])
@@ -43,7 +44,10 @@ class WhatsappApiMain(http.Controller):
                     "Authorization": "Bearer {}".format(verification_status.token),
                 }
                 res =  requests.post(f"{verification_status.url}", headers=headers, json=data['message_json'])
-                Response.status = res.status_code
+                if res.status_code == 200:
+                    Response.status = '200'
+                else:
+                    Response.status = '401'
                 
             else:
                 Response.status = '401'
