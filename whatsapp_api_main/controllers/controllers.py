@@ -5,7 +5,7 @@ import requests
 from passlib.context import CryptContext
 
 class WhatsappApiMain(http.Controller):
-    @http.route('/api/home', auth='public', type='json', csrf=False, website=False, methods=['GET', 'POST'])
+    @http.route('/api/whatsapp_principal', auth='public', type='json', csrf=False, website=False, methods=['GET', 'POST'])
     def index(self, **kw):
         # Table of Data Base
         data_request = request.env['whatsapp.api.main.requests'].sudo()

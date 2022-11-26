@@ -6,7 +6,7 @@ class WhatsAppMain(object):
         self._user_name = user_name
         self._token_verify = token_verify
         self._db_name = db_name
-        self.url_base = 'https://55ee-181-65-25-75.sa.ngrok.io/api/home'
+        self.url_base = 'https://55ee-181-65-25-75.sa.ngrok.io/api/whatsapp_principal'
 
     def request_whatsapp_api_main(self, data):
         headers = {
