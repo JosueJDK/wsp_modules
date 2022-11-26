@@ -2,12 +2,11 @@ import requests
 import json
 
 class WhatsAppMain(object):
-
     def __init__(self, user_name, token_verify, db_name):
         self._user_name = user_name
         self._token_verify = token_verify
         self._db_name = db_name
-        self.url_base = 'https://cb4a-181-65-18-158.sa.ngrok.io/api/home'
+        self.url_base = 'https://55ee-181-65-25-75.sa.ngrok.io/api/home'
 
     def request_whatsapp_api_main(self, data):
         headers = {
@@ -15,8 +14,6 @@ class WhatsAppMain(object):
             "Authorization" : f"Bearer {self._token_verify}"
         }
         response = requests.post(self.url_base, headers=headers, json=data)
-        my_json = response.content.decode('utf8').replace("'",'"')
-        response_data = json.loads(my_json)
         return response.status_code
 
     def request_authorization_whatsapp(self):
@@ -45,8 +42,6 @@ class WhatsAppMain(object):
             }
 
             response = requests.post(self.url_base, headers=headers, json=data)
-            my_json = response.content.decode('utf8').replace("'",'"')
-            response_data = json.loads(my_json)
             return response.status_code
 
 

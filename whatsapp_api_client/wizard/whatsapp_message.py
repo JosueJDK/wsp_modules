@@ -37,7 +37,6 @@ class WhatsappSendMessage(models.TransientModel):
             self.number_phone = ""
 
     def whatsapp_message_post(self):
-        logging.info(f"template not selected! {self.template_id}")
         if not self.number_phone or self.number_phone[0] != "9" or len(self.number_phone) != 9 or self.number_phone == "":
             raise UserError(_('El numero ingresado no es valido!'))
         if not self.message:
@@ -83,18 +82,19 @@ class WhatsappSendMessage(models.TransientModel):
 
             elif self.model == "account.move":
                 component_header = new_object.create_message_components_header(self.file_document, self.link_document)
-                logging.info("Received webhook component_header: %s", component_header)
+
                 component_body = new_object.create_message_components_body(self.message)
-                logging.info("Received webhook component_body: %s", component_body)
+
                 components = [component_header, component_body]
-                logging.info("Received webhook components: %s", components)
+
                 message_json = new_object._send_message_template(self.template_id.name, self.number_phone, components)
-                logging.info("Received webhook message_json: %s", message_json)
+
             else:
-                message_json = new_object._send_message_template('hello_world', self.number_phone)
+                message_json = new_object._send_message_template(self.template_id.name, self.number_phone)
+
             
             response_wasapi = new_object.send_message_whatsapp(authorization_request, message_json)
-            
+
             data_save_message = new_object._generate_save_message_json(response_wasapi, self.number_phone, component_body, component_header)
 
             #Crear registro de mensajes en el servidor principal y en el cliente
